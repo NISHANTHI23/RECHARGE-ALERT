@@ -1,0 +1,84 @@
+<!-- users_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h3>Add New User</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Render the form fields as paragraphs -->
+        <button type="submit">Add User</button>
+    </form>
+<h1>User Recharge Plan Details</h1>
+
+<h2>Users List</h2>
+
+<!-- Form for adding a new user -->
+
+
+<hr>
+
+<!-- Table displaying the existing users -->
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Phone Number</th>
+        <th>Recharge Plan Validity</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.department }}</td>
+        <td>{{ user.phone_number }}</td>
+        <td>{{ user.recharge_plan_validity }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script type="text/javascript">
+    const today = new Date("{{ today }}");
+    const users = [
+        {% for user in users %}
+        {
+            name: "{{ user.name }}",
+            department: "{{ user.department }}",
+            phone: "{{ user.phone_number }}",
+            planValid: new Date("{{ user.recharge_plan_validity }}")
+        },
+        {% endfor %}
+    ];
+
+    // Loop through users and check if the plan validity is tomorrow
+    users.forEach(user => {
+        const planValidDate = user.planValid;
+        const twoDaysBeforeExpiry = new Date(planValidDate);
+        twoDaysBeforeExpiry.setDate(planValidDate.getDate() - 2);  // Set the date to 2 days before the plan validity
+
+        // Check if today's date matches the day before expiry
+        if (today.toDateString() === twoDaysBeforeExpiry.toDateString()) {
+            alert(`Reminder: The plan for ${user.name} from ${user.department} (Phone: ${user.phone}) is expiring in 2 days!`);
+        }
+    });
+</script>
+
+</body>
+</html>
