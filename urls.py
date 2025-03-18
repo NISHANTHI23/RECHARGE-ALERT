@@ -1,9 +1,8 @@
-
-
-from django.urls import path
-from . import views
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
-    path('', views.users_list, name='users_list'),
+    path('admin/', admin.site.urls),
+    path('', include('myapp.urls')),  # Include the myapp URLs
 ]
 
